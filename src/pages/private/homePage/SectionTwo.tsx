@@ -5,6 +5,7 @@ import { PiNotePencilFill } from "react-icons/pi";
 import TopPostContainer from "./_molecules/TopPostContainer";
 import FeaturedCard from "./_molecules/FeaturedCard";
 import Authors from "./_molecules/Authors";
+import Ad from "./_molecules/Ad";
 
 const SectionTwo = () => {
   return (
@@ -58,18 +59,76 @@ const SectionTwo = () => {
           </Content>
         </TopPostContainer>
         <TopPostContainer title="Top Authors">
-          <Authors
-            name="Jenny Kia"
-            description="Fashion designer, Blogger, activist"
-          />
-          <Authors
-            name="Andress rasel"
-            description="Blogger, activist, content creator, part time designer at: www.gethugothemes.com"
-          />
-          <Authors
-            name="Jenny Kia"
-            description="Fashion designer, Blogger, activist"
-          />
+          <Content>
+            <AuthorContainer>
+              <Authors
+                name="Jenny Kia"
+                description="Fashion designer, Blogger, activist"
+              />
+              <Authors
+                name="Andress rasel"
+                description="Blogger, activist, content creator, part time designer at: www.gethugothemes.com"
+              />
+              <Authors
+                name="Jenny Kia"
+                description="Fashion designer, Blogger, activist"
+              />
+            </AuthorContainer>
+            <Ad />
+            <TopPostContainer title="Categories">
+              <CategoryContainer>
+                <div>
+                  <h6>Lifesyle</h6>
+                  <h6>09</h6>
+                </div>
+                <div>
+                  <h6>Travel</h6>
+                  <h6>05</h6>
+                </div>
+                <div>
+                  <h6>Food</h6>
+                  <h6>09</h6>
+                </div>
+                <div>
+                  <h6>Healthcare</h6>
+                  <h6>10</h6>
+                </div>
+                <div>
+                  <h6>Technology</h6>
+                  <h6>03</h6>
+                </div>
+              </CategoryContainer>
+            </TopPostContainer>
+            <TopPostContainer title="Today's update">
+              <UpdateContainer>
+                <Update>
+                  <div>
+                    <h2>14</h2>
+                    <p>New Posts</p>
+                  </div>
+                </Update>
+                <Update>
+                  <div>
+                    <h2>480</h2>
+                    <p>Total Visitors</p>
+                  </div>
+                </Update>
+                <Update>
+                  <div>
+                    <h2>29</h2>
+                    <p>New Subscribers</p>
+                  </div>
+                </Update>
+                <Update>
+                  <div>
+                    <h2>138</h2>
+                    <p>Blog Read</p>
+                  </div>
+                </Update>
+              </UpdateContainer>
+            </TopPostContainer>
+            <TopPostContainer title="Search with tags"></TopPostContainer>
+          </Content>
         </TopPostContainer>
       </InnerContainer>
     </SectionTwoContainer>
@@ -94,7 +153,7 @@ const InnerContainer = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4.8rem;
+  gap: 6.8rem;
 `;
 
 const Post = styled.div`
@@ -149,6 +208,76 @@ const WriteContainer = styled.div`
 
     & p {
       font-size: 1.6rem;
+    }
+  }
+`;
+
+const AuthorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5.4rem;
+`;
+
+const CategoryContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 1.8rem 0;
+
+    h6 {
+      color: var(--small-rgb);
+      font-size: 1.6rem;
+      font-weight: 500;
+      line-height: 150%;
+    }
+  }
+
+  > div:not(:last-child) {
+    border-bottom: 1px dashed var(--secondary-rgb);
+  }
+`;
+
+const UpdateContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3.2rem;
+`;
+
+const Update = styled.div`
+  width: 45%;
+  height: 111px;
+  border-radius: 10px;
+  background: var(--secondary-rgb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+
+    & h2 {
+      color: var(--tertiary-rgb);
+      font-size: 2.4rem;
+      font-weight: 600;
+      line-height: 150%;
+      text-transform: capitalize;
+    }
+
+    & p {
+      color: var(--small-rgb);
+      font-size: 1.5rem;
+      font-weight: 400;
+      line-height: 150%;
     }
   }
 `;
