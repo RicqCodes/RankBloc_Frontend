@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import { HiOutlineTrendingUp } from "react-icons/hi";
-import TrendingBlogCard from "@/components/TrendingBlogCard";
+import TrendingBlogCard from "@/pages/public/homepage/_molecules/TrendingBlogCard";
 
 const TrendingSection: React.FC = () => {
   return (

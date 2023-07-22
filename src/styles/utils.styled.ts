@@ -1,5 +1,5 @@
+"use client";
 // Retrieves the breakpoints from theme object if any and uses them to form media queries
-
 interface Breakpoints {
   xxs: number;
   xs: number;

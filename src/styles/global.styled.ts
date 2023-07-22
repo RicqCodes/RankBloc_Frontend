@@ -19,6 +19,7 @@ export const Global = createGlobalStyle`
 
   --small-rgb: #222222;
   --small-light-rgb:#6B6B6B;
+  --small-dim-rgb:#777777;
 
 }
 

@@ -1,6 +1,6 @@
 import { Button } from "@/styles/element.styled";
 import React from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 const HeroSection: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const HeroSection: React.FC = () => {
       <InnerContent>
         <h1>Empowering Writers, Engaging Readers</h1>
         <p>Discover where Blockchain Meets Boundless Creativity!</p>
-        <CallToAction $fontsize="1.5">Start Reading</CallToAction>
+        <Button $fontsize="1.5">Start Reading</Button>
       </InnerContent>
     </HeroContainer>
   );
@@ -38,7 +38,8 @@ const InnerContent = styled.div`
 
   & h1 {
     font-size: 6.4rem;
-    color: var(title-rgb);
+    font-weight: 800;
+    color: var(--title-rgb);
     text-align: center;
   }
 
@@ -47,7 +48,7 @@ const InnerContent = styled.div`
   }
 `;
 
-const CallToAction = styled(Button)`
-  height: auto;
-  padding: 1.6rem 4.8rem;
-`;
+// const CallToAction = styled(Button)`
+//   height: auto;
+//   padding: 1.6rem 4.8rem;
+// `;

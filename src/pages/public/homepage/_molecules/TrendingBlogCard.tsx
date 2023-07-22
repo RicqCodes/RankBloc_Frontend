@@ -4,13 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { device } from "@/styles/utils.styled";
 
-interface ImageStyle {
-  borderRadius: String;
-  height: String;
-  width: String;
-  style?: String;
-}
-
 const TrendingBlogCard: React.FC = () => {
   const imageStyle = {
     borderRadius: "50%",

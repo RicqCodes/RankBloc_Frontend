@@ -17,10 +17,11 @@ const Header = () => {
             <BiSearch />
             <PiNotePencilFill />
             <IoMdNotifications />
+            <Background>
+              <FaPaintRoller />
+            </Background>
           </IconContainer>
-          <Background>
-            <FaPaintRoller />
-          </Background>
+          <UserProfileIcon>PN</UserProfileIcon>
         </RightContainer>
       </InnerContainer>
     </HeaderContainer>
@@ -57,6 +58,7 @@ const RightContainer = styled.div`
 const IconContainer = styled.div`
   display: flex;
   gap: 3.4rem;
+  align-items: center;
 
   & svg {
     height: 2.4rem;
@@ -69,14 +71,26 @@ const Background = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3.8rem;
-  height: 3.8rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 50%;
   background: var(--tertiary-rgb);
 
   & svg {
-    height: 2rem;
-    width: 2rem;
+    height: 1.6rem;
+    width: 1.6rem;
     color: var(--logo-text);
   }
+`;
+
+const UserProfileIcon = styled.div`
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  background-color: var(--primary-rgb);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
 `;

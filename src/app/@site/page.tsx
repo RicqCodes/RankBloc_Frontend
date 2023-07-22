@@ -1,11 +1,11 @@
 import Image from "next/image";
 
-import Homepage from "@/pages/private/homePage";
+import PublicHomepage from "../../pages/public/homepage";
 
 export default function Home() {
   return (
     <>
-      <Homepage />
+      <PublicHomepage />
     </>
   );
 }
