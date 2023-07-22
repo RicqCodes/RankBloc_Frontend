@@ -25,6 +25,7 @@ const MainContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+  max-width: var(--max-width);
 
   & main {
     width: 100%;

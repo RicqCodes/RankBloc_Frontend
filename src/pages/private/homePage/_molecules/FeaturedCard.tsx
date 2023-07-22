@@ -63,7 +63,7 @@ const InnerContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2.4rem;
+  gap: 1.8rem;
 `;
 
 const Heading = styled.div<{ $sText?: boolean }>`

@@ -46,37 +46,13 @@ const InnerContainer = styled.div`
   grid-template-columns: 2fr 1fr;
   padding: 6rem 0;
   gap: 4rem;
-`;
-
-const FeaturedContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 5rem;
-  position: relative;
-`;
-
-const Title = styled.div`
-  h3,
-  span {
-    font-size: 21px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 140%;
-    text-transform: capitalize;
-  }
-
-  span {
-    background: var(--tertiary-rgb);
-    padding: 1px;
-    color: var(--logo-text);
-  }
+  max-width: var(--max-width);
 `;
 
 const Content = styled.div`
   width: 100%;
   display: flex;
-  gap: 2.4rem;
+  gap: 3rem;
   flex-wrap: wrap;
   height: 48rem;
   overflow: auto;

@@ -9,6 +9,7 @@ interface IButton {
   $fullWidth?: boolean;
   $rounded?: boolean;
   $fontsize: string;
+  $height?: string;
 }
 
 export const Button = styled.button<IButton>`
@@ -20,7 +21,7 @@ export const Button = styled.button<IButton>`
   align-items: center;
   justify-content: center;
   padding: 1.2rem 1.4rem;
-  height: 4.8rem;
+  height: ${({ $height }) => ($height ? `${$height}rem` : "4.8rem")};
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;

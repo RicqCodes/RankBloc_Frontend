@@ -36,6 +36,7 @@ const HeaderContainer = styled.div`
   height: 7rem;
   top: 0;
   position: sticky;
+  z-index: 99;
 `;
 
 const InnerContainer = styled.div`
