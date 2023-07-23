@@ -59,7 +59,7 @@ html.dark-mode {
 html,
 body {
   min-height: 100vh;
-  
+  min-width: 100vw;
 }
 
 body {
