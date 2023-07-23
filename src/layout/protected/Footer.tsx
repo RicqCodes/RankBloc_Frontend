@@ -107,13 +107,16 @@ const EmailContainer = styled.div`
   height: 4.5rem;
   background: var(--secondary-rgb);
   display: flex;
-  padding-left: 2rem;
 
   input {
     height: 100%;
     background: none;
     border: none;
     width: 60%;
+    outline: none;
+    font-size: 1.6rem;
+    padding-left: 1.6rem;
+    padding-right: 1.4rem;
   }
 
   button {
@@ -121,6 +124,8 @@ const EmailContainer = styled.div`
     background: var(--tertiary-rgb);
     border: none;
     color: var(--logo-text);
+    outline: none;
+    font-size: 1.6rem;
     border-radius: 0px 6px 6px 0px;
   }
 `;
