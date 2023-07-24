@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import FeaturedCard from "./_molecules/FeaturedCard";
 import TopPostContainer from "./_molecules/TopPostContainer";
+import { device } from "@/styles/utils.styled";
 
 const SectionOne = () => {
   return (
@@ -38,6 +39,10 @@ const SectionOneContainer = styled.div`
   background-color: var(--primary-rgb);
   padding: 2.4rem 8.4rem;
   width: 100%;
+
+  ${() => device.down("sm")} {
+    padding: 2.4rem;
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -47,10 +52,14 @@ const InnerContainer = styled.div`
   padding: 6rem 0;
   gap: 4rem;
   max-width: var(--max-width);
+
+  ${() => device.down("md")} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Content = styled.div`
-  width: 100%;
+  /* width: 100%; */
   display: flex;
   gap: 3rem;
   flex-wrap: wrap;
@@ -95,11 +104,12 @@ const TopContent = styled.div`
 `;
 
 const TabContainer = styled.div`
-  width: 100%;
+  width: 50%;
   height: 100%;
   position: relative;
   top: 0;
   left: 50%;
+  transform: translateX(-20%);
 
   > div:nth-child(1),
   div:nth-child(2),

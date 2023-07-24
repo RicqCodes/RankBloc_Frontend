@@ -52,7 +52,7 @@ const FooterContainer = styled.footer`
 `;
 
 const InnerContainer = styled.div`
-  max-width: var(--max-width);
+  /* max-width: var(--max-width); */
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
   margin: 0 auto;

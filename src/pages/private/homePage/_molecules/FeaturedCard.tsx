@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import Image from "next/image";
+import { device } from "@/styles/utils.styled";
 
 const imageStyle = {
   borderRadius: "50%",
@@ -57,6 +58,11 @@ export default FeaturedCard;
 const FeaturedContainer = styled.div<{ $fullWidth?: boolean }>`
   max-width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "45%")};
   flex-basis: ${({ $fullWidth }) => ($fullWidth ? "100%" : "45%")};
+
+  ${() => device.down("xs")} {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -109,7 +115,7 @@ const Body = styled.div`
 
 const CoverImage = styled.div`
   width: 100%;
-  height: 229px;
+  /* height: 229px; */
   border-radius: 7px;
   background: #d9d9d9;
 `;
@@ -118,6 +124,7 @@ const Details = styled.div`
   display: flex;
   color: var(--small-dim-rgb);
   align-items: center;
+  flex-wrap: wrap;
 
   & span {
     font-size: 2.4rem;

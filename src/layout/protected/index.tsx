@@ -20,7 +20,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 export default Layout;
 
 const MainContainer = styled.div`
-  max-width: var(--max-width);
   width: 100%;
   height: 100%;
   display: flex;
@@ -28,6 +27,7 @@ const MainContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+  max-width: var(--max-width);
 
   & main {
     width: 100%;

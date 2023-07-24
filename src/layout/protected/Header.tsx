@@ -41,7 +41,6 @@ const HeaderContainer = styled.div`
 
 const InnerContainer = styled.div`
   display: flex;
-  max-width: var(--max-width);
   margin: 0 auto;
   width: 100%;
   height: 100%;

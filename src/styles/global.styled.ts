@@ -59,13 +59,11 @@ html.dark-mode {
 html,
 body {
   min-height: 100vh;
-  width: 100vw;
 }
 
 body {
-  width: 100%;
   color: rgb(var(--foreground-rgb));
-
+  width: 100%;
 }
 
 a {

@@ -6,6 +6,7 @@ import TopPostContainer from "./_molecules/TopPostContainer";
 import FeaturedCard from "./_molecules/FeaturedCard";
 import Authors from "./_molecules/Authors";
 import Ad from "./_molecules/Ad";
+import { device } from "@/styles/utils.styled";
 
 const SectionTwo = () => {
   return (
@@ -140,6 +141,10 @@ export default SectionTwo;
 const SectionTwoContainer = styled.div`
   padding: 2.4rem 8.4rem;
   width: 100%;
+
+  ${() => device.down("sm")} {
+    padding: 2.4rem;
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -148,18 +153,31 @@ const InnerContainer = styled.div`
   grid-template-columns: 2fr 1fr;
   padding: 6rem 0;
   gap: 4rem;
+
+  ${() => device.down("md")} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6.8rem;
+
+  ${() => device.down("xs")} {
+    gap: 3.2rem;
+  }
 `;
 
 const Post = styled.div`
   display: flex;
   gap: 3rem;
-  align-items: flex-start;
+  /* align-items: flex-start; */
+
+  ${() => device.down("xs")} {
+    flex-direction: column;
+    width: 100%;
+  }
 `;
 
 const ImageCover = styled.div`
@@ -167,6 +185,11 @@ const ImageCover = styled.div`
   height: 100%;
   border-radius: 5px;
   background: #d9d9d9;
+
+  ${() => device.down("xs")} {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 const WriteContainer = styled.div`

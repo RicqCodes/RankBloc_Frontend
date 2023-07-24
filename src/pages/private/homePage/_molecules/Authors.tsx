@@ -37,6 +37,7 @@ const AuthorsContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
+  max-width: 50%;
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -47,8 +48,10 @@ const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  width: 50%;
 
   > div {
+    /* width: 80%; */
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
