@@ -5,7 +5,7 @@ import { device } from "./utils.styled";
 
 export const Global = createGlobalStyle`
 :root {
-  --max-width: 1600px;
+  --max-width: 1440px;
   --border-radius: 12px;
   --title-rgb: #222;
   --foreground-rgb: #333333;
@@ -59,10 +59,11 @@ html.dark-mode {
 html,
 body {
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100vw;
 }
 
 body {
+  width: 100%;
   color: rgb(var(--foreground-rgb));
 
 }
