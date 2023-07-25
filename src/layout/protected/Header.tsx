@@ -6,6 +6,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { FaPaintRoller } from "react-icons/fa";
 
 import Logo from "../../components/Logo";
+import { device } from "@/styles/utils.styled";
 
 const Header = () => {
   return (
@@ -14,9 +15,9 @@ const Header = () => {
         <Logo />
         <RightContainer>
           <IconContainer>
-            <BiSearch />
+            {/* <BiSearch />
             <PiNotePencilFill />
-            <IoMdNotifications />
+            <IoMdNotifications /> */}
             <Background>
               <FaPaintRoller />
             </Background>
@@ -47,6 +48,10 @@ const InnerContainer = styled.div`
   align-items: center;
   padding: 2.4rem 8.4rem;
   justify-content: space-between;
+
+  ${() => device.down("xs")} {
+    padding: 2.4rem;
+  }
 `;
 
 const RightContainer = styled.div`

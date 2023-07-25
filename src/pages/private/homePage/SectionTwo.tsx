@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { PiNotePencilFill } from "react-icons/pi";
 
 import TopPostContainer from "./_molecules/TopPostContainer";
+import Post from "../_molecules/Post";
 import FeaturedCard from "./_molecules/FeaturedCard";
 import Authors from "./_molecules/Authors";
 import Ad from "./_molecules/Ad";
@@ -14,18 +15,9 @@ const SectionTwo = () => {
       <InnerContainer>
         <TopPostContainer title="Recently Posted">
           <Content>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
+            <Post />
+            <Post />
+            <Post />
             <WriteContainer>
               <h3>Share your knowledge with our readers</h3>
               <div>
@@ -33,30 +25,12 @@ const SectionTwo = () => {
                 <p>Write on RankBloc</p>
               </div>
             </WriteContainer>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
-            <Post>
-              <ImageCover></ImageCover>
-              <FeaturedCard noImage />
-            </Post>
+            <Post />
+            <Post />
+            <Post />
+            <Post />
+            <Post />
+            <Post />
           </Content>
         </TopPostContainer>
         <TopPostContainer title="Top Authors">
@@ -166,29 +140,6 @@ const Content = styled.div`
 
   ${() => device.down("xs")} {
     gap: 3.2rem;
-  }
-`;
-
-const Post = styled.div`
-  display: flex;
-  gap: 3rem;
-  /* align-items: flex-start; */
-
-  ${() => device.down("xs")} {
-    flex-direction: column;
-    width: 100%;
-  }
-`;
-
-const ImageCover = styled.div`
-  width: 26.6rem;
-  height: 100%;
-  border-radius: 5px;
-  background: #d9d9d9;
-
-  ${() => device.down("xs")} {
-    width: 100%;
-    height: auto;
   }
 `;
 

@@ -1,4 +1,5 @@
 import Logo from "@/components/Logo";
+import { device } from "@/styles/utils.styled";
 import React from "react";
 import { styled } from "styled-components";
 
@@ -58,6 +59,17 @@ const InnerContainer = styled.div`
   margin: 0 auto;
   padding: 2.4rem 8.4rem;
   justify-content: end;
+
+  ${() => device.down("md")} {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 8rem;
+  }
+
+  ${() => device.down("xs")} {
+    padding: 2.4rem;
+    grid-template-columns: 1fr;
+    row-gap: 4rem;
+  }
 `;
 
 const LogoContainer = styled.div`

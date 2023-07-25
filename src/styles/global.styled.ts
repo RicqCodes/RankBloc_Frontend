@@ -6,9 +6,10 @@ import { device } from "./utils.styled";
 export const Global = createGlobalStyle`
 :root {
   --max-width: 1440px;
-  --border-radius: 12px;
+  --border-radius: 8px;
   --title-rgb: #222;
   --foreground-rgb: #333333;
+  --grey-background-rgb: #C4C4C4;
 
   --logo-text: rgb(255,255,255);
   --background-rgb: 214, 219, 220;
@@ -16,6 +17,7 @@ export const Global = createGlobalStyle`
   --primary-rgb:rgb(242, 248, 247);
   --secondary-rgb: rgb(232, 243, 243);
   --tertiary-rgb: rgb(0, 170, 161);
+
 
   --small-rgb: #222222;
   --small-light-rgb:#6B6B6B;
