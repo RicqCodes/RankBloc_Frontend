@@ -115,7 +115,7 @@ const Body = styled.div`
 
 const CoverImage = styled.div`
   width: 100%;
-  /* height: 229px; */
+  height: 22.9rem;
   border-radius: 7px;
   background: #d9d9d9;
 `;

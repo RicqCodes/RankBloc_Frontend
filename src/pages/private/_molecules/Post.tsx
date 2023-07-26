@@ -27,7 +27,6 @@ const PostContainer = styled.div`
 
 const ImageCover = styled.div`
   width: 26.6rem;
-  /* height: 100%; */
   border-radius: 5px;
   background: #d9d9d9;
 
