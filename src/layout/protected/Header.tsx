@@ -20,7 +20,7 @@ const Header = () => {
       if (currentScrollY > scrollY) {
         setHeaderTransform((prevTransform) => Math.max(prevTransform - 8, -68));
       } else if (currentScrollY < scrollY) {
-        setHeaderTransform((prevTransform) => Math.min(prevTransform + 5, 0));
+        setHeaderTransform((prevTransform) => Math.min(prevTransform + 8, 0));
       }
     };
 
