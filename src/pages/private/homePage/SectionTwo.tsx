@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import { PiNotePencilFill } from "react-icons/pi";
 
-import TopPostContainer from "./_molecules/TopPostContainer";
+import TopPostContainer from "../_molecules/TopPostContainer";
 import Post from "../_molecules/Post";
 import FeaturedCard from "./_molecules/FeaturedCard";
 import Authors from "./_molecules/Authors";

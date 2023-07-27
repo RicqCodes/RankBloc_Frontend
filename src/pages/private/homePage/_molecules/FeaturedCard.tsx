@@ -57,11 +57,9 @@ export default FeaturedCard;
 
 const FeaturedContainer = styled.div<{ $fullWidth?: boolean }>`
   max-width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "45%")};
-  flex-basis: ${({ $fullWidth }) => ($fullWidth ? "100%" : "45%")};
 
   ${() => device.down("xs")} {
     max-width: 100%;
-    flex-basis: 100%;
   }
 `;
 

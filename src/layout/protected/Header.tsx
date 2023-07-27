@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useEffect, useRef, useState } from "react";
+import styled, { css } from "styled-components";
 import { BiSearch } from "react-icons/bi";
 import { PiNotePencilFill } from "react-icons/pi";
 import { IoMdNotifications } from "react-icons/io";
@@ -9,15 +9,39 @@ import Logo from "../../components/Logo";
 import { device } from "@/styles/utils.styled";
 
 const Header = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const [headerTransform, setHeaderTransform] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+
+      if (currentScrollY > scrollY) {
+        setHeaderTransform((prevTransform) => Math.max(prevTransform - 8, -68));
+      } else if (currentScrollY < scrollY) {
+        setHeaderTransform((prevTransform) => Math.min(prevTransform + 5, 0));
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollY]);
+
+  console.log(headerTransform);
+
   return (
-    <HeaderContainer>
+    <HeaderContainer transformy={headerTransform}>
       <InnerContainer>
         <Logo />
         <RightContainer>
           <IconContainer>
-            {/* <BiSearch />
+            <BiSearch />
             <PiNotePencilFill />
-            <IoMdNotifications /> */}
+            <IoMdNotifications />
             <Background>
               <FaPaintRoller />
             </Background>
@@ -31,12 +55,13 @@ const Header = () => {
 
 export default Header;
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.div<{ transformy: number }>`
   width: 100%;
   background: var(--secondary-rgb);
   height: 7rem;
   top: 0;
   position: sticky;
+  transform: translateY(${({ transformy }) => transformy}px);
   z-index: 99;
 `;
 

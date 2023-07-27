@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import FeaturedCard from "./_molecules/FeaturedCard";
-import TopPostContainer from "./_molecules/TopPostContainer";
+import TopPostContainer from "../_molecules/TopPostContainer";
 import { device } from "@/styles/utils.styled";
 
 const SectionOne = () => {
