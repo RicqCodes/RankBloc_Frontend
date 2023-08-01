@@ -31,10 +31,8 @@ const Header = () => {
     };
   }, [scrollY]);
 
-  console.log(headerTransform);
-
   return (
-    <HeaderContainer transformy={headerTransform}>
+    <HeaderContainer $transformy={headerTransform}>
       <InnerContainer>
         <Logo />
         <RightContainer>
@@ -55,13 +53,13 @@ const Header = () => {
 
 export default Header;
 
-const HeaderContainer = styled.div<{ transformy: number }>`
+const HeaderContainer = styled.div<{ $transformy: number }>`
   width: 100%;
   background: var(--secondary-rgb);
   height: 7rem;
   top: 0;
   position: sticky;
-  transform: translateY(${({ transformy }) => transformy}px);
+  transform: translateY(${({ $transformy }) => $transformy}px);
   z-index: 99;
 `;
 

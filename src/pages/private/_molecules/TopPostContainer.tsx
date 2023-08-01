@@ -18,7 +18,7 @@ const TopPostContainer = ({
             <span>{titleSpan}</span> {titleOther?.join(" ")}
           </h3>
         </Title>
-        {children}
+        {children && children}
       </Container>
     </>
   );

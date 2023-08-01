@@ -3,6 +3,7 @@ import React from "react";
 import { styled } from "styled-components";
 import Post from "../../_molecules/Post";
 import BlogActions from "./BlogActions";
+import { device } from "@/styles/utils.styled";
 
 const AboutAuthor = () => {
   return (
@@ -46,10 +47,8 @@ const AboutAuthorContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 68rem;
-  margin: 0 auto;
-  gap: 6rem;
   padding-top: 9rem;
+  border-bottom: 1px solid var(--grey-background-rgb);
 `;
 
 const InnerContainer = styled.div`
@@ -113,6 +112,7 @@ const MorePost = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
+  padding: 3.2rem 0 6.4rem;
 
   h3 {
     font-size: 1.6rem;
@@ -124,5 +124,9 @@ const MorePost = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 2.4rem;
+
+    ${() => device.down("sm")} {
+      flex-direction: column;
+    }
   }
 `;

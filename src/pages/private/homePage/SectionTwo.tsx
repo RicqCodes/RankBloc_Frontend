@@ -4,7 +4,6 @@ import { PiNotePencilFill } from "react-icons/pi";
 
 import TopPostContainer from "../_molecules/TopPostContainer";
 import Post from "../_molecules/Post";
-import FeaturedCard from "./_molecules/FeaturedCard";
 import Authors from "./_molecules/Authors";
 import Ad from "./_molecules/Ad";
 import { device } from "@/styles/utils.styled";
@@ -15,9 +14,9 @@ const SectionTwo = () => {
       <InnerContainer>
         <TopPostContainer title="Recently Posted">
           <Content>
-            <Post />
-            <Post />
-            <Post />
+            <Post noAction />
+            <Post noAction />
+            <Post noAction />
             <WriteContainer>
               <h3>Share your knowledge with our readers</h3>
               <div>
@@ -25,12 +24,12 @@ const SectionTwo = () => {
                 <p>Write on RankBloc</p>
               </div>
             </WriteContainer>
-            <Post />
-            <Post />
-            <Post />
-            <Post />
-            <Post />
-            <Post />
+            <Post noAction />
+            <Post noAction />
+            <Post noAction />
+            <Post noAction />
+            <Post noAction />
+            <Post noAction />
           </Content>
         </TopPostContainer>
         <TopPostContainer title="Top Authors">

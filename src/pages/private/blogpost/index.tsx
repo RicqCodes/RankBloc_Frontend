@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
-import { usePathname, useSearchParams, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { styled } from "styled-components";
 import BlogActions from "./_molecules/BlogActions";
 import AboutAuthor from "./_molecules/AboutAuthor";
+import { device } from "@/styles/utils.styled";
+import RelatedPost from "../_molecules/RelatedPost";
 
 const BlogPost = () => {
   const params = useParams();
@@ -146,7 +148,10 @@ const BlogPost = () => {
         </div>
         <BlogActions noBorder noViews />
       </InnerContainer>
-      <AboutAuthor />
+      <ExtraContainer>
+        <AboutAuthor />
+        <RelatedPost />
+      </ExtraContainer>
     </BlogPostContainer>
   );
 };
@@ -154,8 +159,12 @@ const BlogPost = () => {
 export default BlogPost;
 
 const BlogPostContainer = styled.div`
-  padding: 2.4rem 8.4rem;
+  padding: 4.8rem 8.4rem;
   width: 100%;
+
+  ${() => device.down("sm")} {
+    padding: 2.4rem;
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -260,4 +269,12 @@ const BodyContent = styled.div`
     color: #242424;
     font-weight: 400;
   }
+`;
+
+const ExtraContainer = styled.div`
+  max-width: 68rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
 `;

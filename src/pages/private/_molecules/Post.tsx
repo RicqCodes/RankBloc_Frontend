@@ -4,12 +4,18 @@ import FeaturedCard from "../homePage/_molecules/FeaturedCard";
 import { device } from "@/styles/utils.styled";
 import BlogActions from "../blogpost/_molecules/BlogActions";
 
-const Post = ({ column }: { column?: boolean }) => {
+const Post = ({
+  column,
+  noAction,
+}: {
+  column?: boolean;
+  noAction?: boolean;
+}) => {
   return (
     <PostContainer column={column}>
       <ImageCover column={column}></ImageCover>
       <FeaturedCard noImage fullWidth />
-      <BlogActions noViews noBorder />
+      {!noAction && <BlogActions noViews noBorder />}
     </PostContainer>
   );
 };
@@ -24,6 +30,10 @@ const PostContainer = styled.div<{ column?: boolean }>`
     column
       ? css`
           flex-direction: column;
+
+          ${() => device.down("sm")} {
+            width: 100%;
+          }
         `
       : css``};
 
