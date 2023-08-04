@@ -1,13 +1,11 @@
 import React from "react";
 
-import NotificationsPage from "@/pages/private/notification";
+import Notifications from "@/pages/private/notification";
 
-const Notifications = () => {
+export default function NotificationsPage() {
   return (
     <>
-      <NotificationsPage />
+      <Notifications />
     </>
   );
-};
-
-export default Notifications;
+}

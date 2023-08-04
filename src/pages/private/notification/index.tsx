@@ -1,5 +1,4 @@
 "use client";
-import { device } from "@/styles/utils.styled";
 import React, { useState } from "react";
 import { styled } from "styled-components";
 
@@ -11,32 +10,30 @@ import Topic from "../_molecules/Topic";
 import Authors from "../homePage/_molecules/Authors";
 import SideBySideContainer from "../_molecules/SideBySideContainer";
 
-const NotificationsPage = () => {
+const Notifications = () => {
   const [active, setActive] = useState(1);
   return (
     <SideBySideContainer>
       <LeftContainer slot="left">
-        <TopPostContainer
-          title="Notifications"
-          children={undefined}
-        ></TopPostContainer>
-        <Tab
-          tabContent={[
-            { id: 1, title: "all" },
-            { id: 2, title: "following" },
-          ]}
-          currentActive={active}
-          setCurrentActive={setActive}
-        />
-        <NotificationContent>
-          <NotificationType notifications={[]} />
-          <NotificationType notifications={[]} />
-          <NotificationType notifications={[]} />
-          <NotificationType notifications={[]} />
-          <NotificationType notifications={[]} />
-          <NotificationType notifications={[]} />
-          <NotificationType notifications={[]} />
-        </NotificationContent>
+        <TopPostContainer title="Notifications">
+          <Tab
+            tabContent={[
+              { id: 1, title: "all" },
+              { id: 2, title: "following" },
+            ]}
+            currentActive={active}
+            setCurrentActive={setActive}
+          />
+          <NotificationContent>
+            <NotificationType notifications={[]} />
+            <NotificationType notifications={[]} />
+            <NotificationType notifications={[]} />
+            <NotificationType notifications={[]} />
+            <NotificationType notifications={[]} />
+            <NotificationType notifications={[]} />
+            <NotificationType notifications={[]} />
+          </NotificationContent>
+        </TopPostContainer>
       </LeftContainer>
 
       <RightContainer slot="right">
@@ -73,7 +70,7 @@ const NotificationsPage = () => {
   );
 };
 
-export default NotificationsPage;
+export default Notifications;
 
 const LeftContainer = styled.div`
   display: flex;

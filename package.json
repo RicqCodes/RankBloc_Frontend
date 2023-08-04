@@ -20,9 +20,11 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "styled-components": "^6.0.4",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/dompurify": "^3.0.2"
+    "@types/dompurify": "^3.0.2",
+    "@types/uuid": "^9.0.2"
   }
 }

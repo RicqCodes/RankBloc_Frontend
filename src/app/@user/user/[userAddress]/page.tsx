@@ -1,12 +1,10 @@
-import UserProfilePage from "@/pages/private/profile";
 import React from "react";
+import UserProfilePage from "@/pages/private/profile";
 
-const page = () => {
+export default function UserPage() {
   return (
     <>
       <UserProfilePage />
     </>
   );
-};
-
-export default page;
+}

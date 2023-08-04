@@ -1,12 +1,9 @@
 import BlogPost from "@/pages/private/blogpost";
-import React from "react";
 
-const page = () => {
+export default function BlogPage() {
   return (
     <>
       <BlogPost />
     </>
   );
-};
-
-export default page;
+}
