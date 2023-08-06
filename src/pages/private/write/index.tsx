@@ -1,44 +1,17 @@
 "use client";
 
-import React, {
-  ChangeEventHandler,
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 
 import { v4 as uuidv4 } from "uuid";
-import { LiaImage, LiaPhotoVideoSolid, LiaCodeSolid } from "react-icons/lia";
-import { PiArrowsInLineVerticalFill } from "react-icons/pi";
-import { AiOutlineLink } from "react-icons/ai";
 
-import { IoIosAddCircleOutline } from "react-icons/io";
-import Image from "next/image";
-
-import { getCaret, setCaret } from "@/utils/claret";
+import { setCaret } from "@/utils/claret";
 import { toBase64 } from "@/utils/toBase64";
-import { extractBaseDomain } from "@/utils/helpers";
 
-type paragraphType = "text" | "image" | "video" | "code" | "divider" | "link";
-
-interface Metadata {
-  siteName: string;
-  url: string;
-  type: string;
-  title: string;
-  description: string;
-  image: string;
-}
-
-interface Paragraph {
-  id: string;
-  type: paragraphType;
-  content: string;
-  figCaption?: string;
-  webMetadata?: Metadata;
-}
+import { IParagraph, paragraphType } from "@/interfaces/write";
+import AddControlPanel from "./_molecules/AddControlPanel";
+import { TitleEditor } from "./_molecules/TitleEditor";
+import { ParagraphEditor } from "./_molecules/ParagraphEditor";
 
 const WritePage = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -52,7 +25,7 @@ const WritePage = () => {
 
   const [openMedia, setOpenMedia] = useState<boolean>(false);
   const [isTitleEmpty, setIsTitleEmpty] = useState<boolean>(true);
-  const [paragraphs, setParagraphs] = useState<Paragraph[]>([
+  const [paragraphs, setParagraphs] = useState<IParagraph[]>([
     { id: "1", type: "text", content: "" },
   ]);
   const [title, setTitle] = useState("");
@@ -66,14 +39,6 @@ const WritePage = () => {
       const updatedTitle = titleRef.current.textContent ?? "";
       setIsTitleEmpty(updatedTitle?.trim() === "");
       setTitle(updatedTitle);
-    }
-  };
-
-  // Bring the cursor to the title on focus
-  const handleTitleFocus = () => {
-    setIsTitleEmpty(false);
-    if (titleRef.current) {
-      titleRef.current.focus();
     }
   };
 
@@ -94,32 +59,6 @@ const WritePage = () => {
     }
   };
 
-  const handleParagraphInput = (
-    e: FormEvent<HTMLParagraphElement | HTMLPreElement>,
-    id: string,
-    content: string,
-    caretOffset: number,
-    type: paragraphType
-  ) => {
-    const updatedParagraphs = paragraphs.map((paragraph) =>
-      paragraph.id === id ? { ...paragraph, content, type } : paragraph
-    );
-
-    setParagraphs(updatedParagraphs);
-
-    // Set the caret position within the updated paragraph
-    const focusedParagraphElement = document.querySelector(
-      `p[data-id="${id}"]`
-    );
-    const paragraph = e.target as HTMLParagraphElement;
-    if (
-      focusedParagraphElement instanceof HTMLElement &&
-      paragraph.textContent !== ""
-    ) {
-      setCaret(focusedParagraphElement, caretOffset);
-    }
-  };
-
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -130,82 +69,53 @@ const WritePage = () => {
     // Convert the file to base64
     const base64 = await toBase64(file as File);
 
-    const updatedParagraphs = paragraphs.map((paragraph) =>
-      paragraph.id === focusedParagraphId
-        ? { ...paragraph, content: base64, type: "image" }
-        : paragraph
-    );
-
-    setParagraphs(updatedParagraphs);
-
-    const newParagraphId = uuidv4();
-    setParagraphs((prevParagraphs) => [
-      ...prevParagraphs,
-      { id: newParagraphId, type: "text", content: "" }, // Add a new paragraph with a unique id
-    ]);
-    setOpenMedia(false);
-  };
-
-  const handleFetchMetadata = async (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    paragraph: Paragraph
-  ) => {
-    // Fetch video metadata (you might need a different approach to fetch video metadata)
-    if (e.key === "Enter") {
-      try {
-        const res = await fetch(
-          `http://localhost:8000/api/v1/miscellaneous/metadata?url=${paragraph.content}`
+    if (typeof base64 === "string") {
+      setParagraphs((prevParagraphs: IParagraph[]) => {
+        const updatedParagraphs = prevParagraphs.map((paragraph) =>
+          paragraph.id === focusedParagraphId
+            ? { ...paragraph, type: "image" as paragraphType, imageUrl: base64 } // Cast type to paragraphType
+            : paragraph
         );
 
-        const dataResponse = await res.json();
+        const newParagraphId = uuidv4();
+        const newParagraph: IParagraph = {
+          id: newParagraphId,
+          type: "text",
+          content: "",
+        };
 
-        if (dataResponse) {
-          const newMetadata = {
-            siteName: dataResponse.data.og.site_name,
-            url: dataResponse.data.og.url,
-            type: dataResponse.data.og.type,
-            title: dataResponse.data.meta.title,
-            description: dataResponse.data.meta.description,
-            image: dataResponse.data.og.image,
-          };
-          setParagraphs((prevParagraph) => {
-            return prevParagraph.map((paragraph) =>
-              paragraph.id === focusedParagraphId
-                ? { ...paragraph, webMetadata: newMetadata }
-                : paragraph
-            );
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
+        return [...updatedParagraphs, newParagraph];
+      });
+      setOpenMedia(false);
+    } else {
+      // Handle the case where base64 is not a string (e.g., due to a failed conversion)
+      console.error("Failed to convert image to base64.");
     }
   };
 
   useEffect(() => {
-    const content = contentRef.current;
-    // Handler for adding a new paragraph when Enter key is pressed
-    const addNewParagraph = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const focusedElement = document.activeElement as HTMLElement | null;
+      const { key } = event;
 
-        const focusedElement = document.activeElement as HTMLElement | null;
+      if (key === "Enter") {
+        event.preventDefault();
 
         if (focusedElement) {
           if (focusedElement.tagName === "PRE") {
-            // If the focused element is a <pre> tag, add a new line to its content
+            // Add a new line to <pre> tag content
             const paragraphId = focusedElement.getAttribute("data-id");
-            setParagraphs((prevParagraphs) => {
-              return prevParagraphs.map((paragraph) =>
+            setParagraphs((prevParagraphs) =>
+              prevParagraphs.map((paragraph) =>
                 paragraph.id === paragraphId
                   ? { ...paragraph, content: paragraph.content + "\n" }
                   : paragraph
-              );
-            });
+              )
+            );
             caretPositions.current[focusedParagraphId] =
               focusedElement.textContent?.length || 0;
           } else {
-            // If the focused element is not a <pre> tag, create a new paragraph
+            // Create a new paragraph if the focused element is not <pre>
             const newParagraphId = uuidv4();
             setParagraphs((prevParagraphs) => [
               ...prevParagraphs,
@@ -214,94 +124,9 @@ const WritePage = () => {
             setFocusedParagraphId(newParagraphId);
           }
         }
-      }
-    };
-
-    // const removeParagraph = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    //   if (event.key === "Delete" || event.key === "Backspace") {
-    //     const focusedElementToDelete =
-    //       document.activeElement as HTMLElement | null;
-
-    //     if (
-    //       // focusedElement?.tagName === "P" &&
-    //       focusedElementToDelete?.getAttribute("data-id")
-    //     ) {
-    //       const paragraphIdToDelete =
-    //         focusedElementToDelete.getAttribute("data-id");
-
-    //       setParagraphs((prevParagraphs) => {
-    //         const paragraph = prevParagraphs.find(
-    //           (p) => p.id === paragraphIdToDelete
-    //         );
-    //         if (paragraph && paragraph.content.trim() === "") {
-    //           const paragraphIndex = prevParagraphs.findIndex(
-    //             (p) => p.id === paragraphIdToDelete
-    //           );
-
-    //           if (paragraphIndex > 0) {
-    //             setFocusedParagraphId(prevParagraphs[paragraphIndex - 1].id);
-    //           }
-
-    //           return prevParagraphs.filter((p) => p.id !== paragraphIdToDelete);
-    //         }
-    //         return prevParagraphs;
-    //       });
-    //     }
-    //   }
-    // };
-    // const removeParagraph = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    //   const { key } = event;
-
-    //   if (key === "Delete" || key === "Backspace") {
-    //     const focusedElementToDelete = document.activeElement as HTMLElement;
-
-    //     if (focusedElementToDelete?.hasAttribute("data-id")) {
-    //       const paragraphIdToDelete =
-    //         focusedElementToDelete.getAttribute("data-id");
-
-    //       setParagraphs((prevParagraphs) => {
-    //         const paragraphIndexToDelete = prevParagraphs.findIndex(
-    //           (paragraph) => paragraph.id === paragraphIdToDelete
-    //         );
-
-    //         if (paragraphIndexToDelete >= 0) {
-    //           event.preventDefault(); // Prevent browser's default behavior
-    //           event.stopPropagation(); // Prevent event from bubbling up
-
-    //           // Calculate the index of the paragraph to focus after deletion
-    //           let nextParagraphIndex = paragraphIndexToDelete;
-    //           if (key === "Delete") {
-    //             nextParagraphIndex = Math.min(
-    //               paragraphIndexToDelete,
-    //               prevParagraphs.length - 2
-    //             );
-    //           } else if (key === "Backspace") {
-    //             nextParagraphIndex = Math.max(paragraphIndexToDelete - 1, 0);
-    //           }
-
-    //           // Set the new focused paragraph id
-    //           setFocusedParagraphId(prevParagraphs[nextParagraphIndex].id);
-
-    //           // Return the updated paragraphs state by filtering out the deleted paragraph
-    //           return prevParagraphs.filter(
-    //             (paragraph) => paragraph.id !== paragraphIdToDelete
-    //           );
-    //         }
-
-    //         return prevParagraphs;
-    //       });
-    //     }
-    //   }
-    // };
-
-    const removeParagraph = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      const { key } = event;
-      const focusedElementToDelete = document.activeElement as HTMLElement;
-
-      if (key === "Delete" || key === "Backspace") {
-        if (focusedElementToDelete?.hasAttribute("data-id")) {
-          const paragraphIdToDelete =
-            focusedElementToDelete.getAttribute("data-id");
+      } else if (key === "Delete" || key === "Backspace") {
+        if (focusedElement?.hasAttribute("data-id")) {
+          const paragraphIdToDelete = focusedElement.getAttribute("data-id");
 
           setParagraphs((prevParagraphs) => {
             const paragraphIndexToDelete = prevParagraphs.findIndex(
@@ -320,13 +145,11 @@ const WritePage = () => {
                   (paragraph) => paragraph.id !== paragraphIdToDelete
                 );
 
-                console.log(newParagraphs.length);
-
                 if (newParagraphs.length === 0) {
                   // If all paragraphs are deleted, focus on the h3 element
                   setFocusedParagraphId("0");
                 } else {
-                  // If there are remaining paragraphs, focus on the previous or next paragraph
+                  // Focus on the previous or next paragraph if there are remaining paragraphs
                   const nextParagraphIndex = Math.min(
                     paragraphIndexToDelete,
                     newParagraphs.length - 1
@@ -344,14 +167,12 @@ const WritePage = () => {
       }
     };
 
-    document.addEventListener("keydown", addNewParagraph);
-    content?.addEventListener("keydown", removeParagraph);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", addNewParagraph);
-      content?.addEventListener("keydown", removeParagraph);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []); // Add the dependency array to run the effect only once
+  }, []);
 
   useEffect(() => {
     if (focusedParagraphId) {
@@ -366,7 +187,7 @@ const WritePage = () => {
     }
   }, [focusedParagraphId]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const newParagraphRef = paragraphRefs.current[focusedParagraphId];
     if (newParagraphRef) {
       newParagraphRef.focus();
@@ -383,301 +204,56 @@ const WritePage = () => {
 
   useEffect(() => {
     if (focusedParagraphId) {
-      const focusedElement = paragraphRefs.current[focusedParagraphId];
-      if (focusedElement) {
-        setIsFocusedElementEmpty(focusedElement.textContent?.trim() === "");
+      const focusedParagraph = paragraphs.find(
+        (p) => p.id === focusedParagraphId
+      );
+
+      if (focusedParagraph?.type === "text") {
+        const focusedElement = paragraphRefs.current[focusedParagraphId];
+        if (focusedElement) {
+          setIsFocusedElementEmpty(focusedElement.textContent?.trim() === "");
+        }
+      } else {
+        setIsFocusedElementEmpty(false);
       }
     }
   }, [focusedParagraphId, paragraphs]);
+
+  console.log(paragraphs);
 
   return (
     <WriteContainer>
       <SectionContainer>
         <InnerContainer>
-          <AddContentContainer ref={mediaRef}>
-            {isFocusedElementEmpty && (
-              <AddContentButton
-                onClick={() => setOpenMedia(!openMedia)}
-                $open={openMedia}
-              >
-                <IoIosAddCircleOutline />
-              </AddContentButton>
-            )}
-            {openMedia && (
-              <AddContent>
-                <div>
-                  <LiaImage onClick={() => imageInputRef.current?.click()} />
-                </div>
-                <div>
-                  <AiOutlineLink
-                    onClick={() => {
-                      setOpenMedia(false);
-                      setParagraphs((prevParagraphs) =>
-                        prevParagraphs.map((paragraph) =>
-                          paragraph.id === focusedParagraphId
-                            ? { ...paragraph, type: "link" }
-                            : paragraph
-                        )
-                      );
-                    }}
-                  />
-                </div>
-                <div>
-                  <LiaPhotoVideoSolid />
-                </div>
-                <div>
-                  <LiaCodeSolid
-                    onClick={() => {
-                      setOpenMedia(false);
-                      setParagraphs((prevParagraphs) =>
-                        prevParagraphs.map((paragraph) =>
-                          paragraph.id === focusedParagraphId
-                            ? { ...paragraph, type: "code" }
-                            : paragraph
-                        )
-                      );
-                      const newParagraphId = uuidv4();
-                      setParagraphs((prevParagraphs) => [
-                        ...prevParagraphs,
-                        { id: newParagraphId, type: "text", content: "" }, // Add a new paragraph with a unique id
-                      ]);
-                    }}
-                  />
-                </div>
-                <div
-                  onClick={() => {
-                    setOpenMedia(false);
-                    setParagraphs((prevParagraphs) =>
-                      prevParagraphs.map((paragraph) =>
-                        paragraph.id === focusedParagraphId
-                          ? { ...paragraph, type: "divider" }
-                          : paragraph
-                      )
-                    );
-                    const newParagraphId = uuidv4();
-                    setParagraphs((prevParagraphs) => [
-                      ...prevParagraphs,
-                      { id: newParagraphId, type: "text", content: "" }, // Add a new paragraph with a unique id
-                    ]);
-                  }}
-                >
-                  <PiArrowsInLineVerticalFill />
-                </div>
-                <input
-                  type="file"
-                  ref={imageInputRef}
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleImageUpload}
-                />
-              </AddContent>
-            )}
-          </AddContentContainer>
-          <h2
-            ref={titleRef}
-            data-id="0"
-            contentEditable
-            onBlur={handleTitleChange}
-            onFocus={handleTitleFocus}
-            onClick={() => {
-              setFocusedParagraphId("0");
-              handleIconMovement();
-            }}
-            suppressContentEditableWarning
-          >
-            {isTitleEmpty ? <span>Title</span> : null}
-          </h2>
+          <AddControlPanel
+            openMedia={openMedia}
+            setOpenMedia={setOpenMedia}
+            mediaRef={mediaRef}
+            isFocusedElementEmpty={isFocusedElementEmpty}
+            imageInputRef={imageInputRef}
+            focusedParagraphId={focusedParagraphId}
+            setParagraphs={setParagraphs}
+            handleImageUpload={handleImageUpload}
+          />
+          <TitleEditor
+            data-id={0}
+            titleRef={titleRef}
+            isTitleEmpty={isTitleEmpty}
+            setIsTitleEmpty={setIsTitleEmpty}
+            setFocusedParagraphId={setFocusedParagraphId}
+            handleIconMovement={handleIconMovement}
+            handleTitleChange={handleTitleChange}
+          />
           <div ref={contentRef} onClick={handleIconMovement}>
-            {paragraphs.map((paragraph) => {
-              if (paragraph.type === "text") {
-                return (
-                  <p
-                    key={paragraph.id}
-                    data-id={paragraph.id}
-                    contentEditable
-                    dir="ltr"
-                    suppressContentEditableWarning
-                    ref={(ref) => (paragraphRefs.current[paragraph.id] = ref)}
-                    onClick={() => setFocusedParagraphId(paragraph.id)}
-                    onInput={(e) => {
-                      const paragraphElement = e.target as HTMLParagraphElement;
-                      const newContent = paragraphElement.textContent || "";
-                      caretPositions.current[paragraph.id] = getCaret(
-                        document.activeElement as HTMLElement
-                      );
-                      handleParagraphInput(
-                        e,
-                        paragraph.id,
-                        newContent,
-                        caretPositions.current[paragraph.id],
-                        "text"
-                      );
-                    }}
-                  >
-                    {paragraph.content}
-                  </p>
-                );
-              } else if (paragraph.type === "image") {
-                return (
-                  <figure
-                    key={paragraph.id}
-                    data-id={paragraph.id}
-                    contentEditable
-                    dir="ltr"
-                    suppressContentEditableWarning
-                    ref={(ref) => (paragraphRefs.current[paragraph.id] = ref)}
-                    onClick={() => setFocusedParagraphId(paragraph.id)}
-                  >
-                    <div>
-                      <Image
-                        key={paragraph.id}
-                        src={paragraph.content}
-                        alt={paragraph.type}
-                        width={"740"}
-                        height={"480"}
-                      />
-                    </div>
-
-                    <figcaption>
-                      {}
-                      Type caption for image (optional)
-                    </figcaption>
-                  </figure>
-                );
-              } else if (paragraph.type === "video") {
-                return <video key={paragraph.id} />;
-              } else if (paragraph.type === "link") {
-                if (!paragraph?.webMetadata) {
-                  return (
-                    <input
-                      key={paragraph.id}
-                      data-id={paragraph.id}
-                      type="text"
-                      placeholder="Paste a link to embed content and press Enter"
-                      onChange={(e) => {
-                        const newContent = e.target.value;
-                        setParagraphs((prevParagraphs) =>
-                          prevParagraphs.map((p) =>
-                            p.id === paragraph.id
-                              ? { ...p, content: newContent }
-                              : p
-                          )
-                        );
-                      }}
-                      suppressContentEditableWarning
-                      ref={(ref) => (paragraphRefs.current[paragraph.id] = ref)}
-                      onClick={() => setFocusedParagraphId(paragraph.id)}
-                      onKeyDown={(e) => handleFetchMetadata(e, paragraph)}
-                    />
-                  );
-                }
-                if (paragraph?.webMetadata) {
-                  return (
-                    <ContentEmbed
-                      key={paragraph.id}
-                      data-id={paragraph.id}
-                      contentEditable
-                      dir="ltr"
-                      spellCheck={false}
-                      suppressContentEditableWarning
-                      ref={(ref) => (paragraphRefs.current[paragraph.id] = ref)}
-                      onClick={() => setFocusedParagraphId(paragraph.id)}
-                      onInput={(e) => {
-                        const paragraphElement =
-                          e.target as HTMLParagraphElement;
-                        const newContent = paragraphElement.textContent || "";
-                        caretPositions.current[paragraph.id] = getCaret(
-                          document.activeElement as HTMLElement
-                        );
-                        handleParagraphInput(
-                          e,
-                          paragraph.id,
-                          newContent,
-                          caretPositions.current[paragraph.id],
-                          "link"
-                        );
-                      }}
-                    >
-                      <TextContainer>
-                        <h3>{paragraph.webMetadata.title}</h3>
-                        <p>{paragraph.webMetadata.description}</p>
-                        <p>
-                          {extractBaseDomain(
-                            paragraph.webMetadata.url || paragraph.content
-                          )}
-                        </p>
-                      </TextContainer>
-                      {paragraph.webMetadata.image && (
-                        <ImageContainer>
-                          <Image
-                            src={paragraph.webMetadata?.image || ""}
-                            alt={paragraph.webMetadata?.description}
-                            height="100"
-                            width="80"
-                          />
-                        </ImageContainer>
-                      )}
-                    </ContentEmbed>
-                  );
-                }
-              } else if (paragraph.type === "code") {
-                return (
-                  <CodeContainer
-                    data-id={paragraph.id}
-                    key={paragraph.id}
-                    spellCheck={false}
-                    contentEditable
-                    dir="ltr"
-                    suppressContentEditableWarning
-                    ref={(ref) => (paragraphRefs.current[paragraph.id] = ref)}
-                    onClick={() => setFocusedParagraphId(paragraph.id)}
-                    onInput={(e) => {
-                      const paragraphElement = e.target as HTMLParagraphElement;
-                      const newContent = paragraphElement.textContent || "";
-                      caretPositions.current[paragraph.id] = getCaret(
-                        document.activeElement as HTMLElement
-                      );
-                      handleParagraphInput(
-                        e,
-                        paragraph.id,
-                        newContent,
-                        caretPositions.current[paragraph.id],
-                        "code"
-                      );
-                    }}
-                  >
-                    <span>{paragraph.content}</span>
-                  </CodeContainer>
-                );
-              } else if (paragraph.type === "divider") {
-                return (
-                  <section
-                    key={paragraph.id}
-                    data-id={paragraph.id}
-                    contentEditable
-                    suppressContentEditableWarning
-                    ref={(ref) => (paragraphRefs.current[paragraph.id] = ref)}
-                    onClick={() => setFocusedParagraphId(paragraph.id)}
-                    onInput={(e) => {
-                      const paragraphElement = e.target as HTMLParagraphElement;
-                      const newContent = paragraphElement.textContent || "";
-                      caretPositions.current[paragraph.id] = getCaret(
-                        document.activeElement as HTMLElement
-                      );
-                      handleParagraphInput(
-                        e,
-                        paragraph.id,
-                        newContent,
-                        caretPositions.current[paragraph.id],
-                        "divider"
-                      );
-                    }}
-                  >
-                    <hr></hr>
-                  </section>
-                );
-              }
-            })}
+            <ParagraphEditor
+              paragraphs={paragraphs}
+              paragraphRefs={paragraphRefs}
+              setParagraphs={setParagraphs}
+              setOpenMedia={setOpenMedia}
+              focusedParagraphId={focusedParagraphId}
+              setFocusedParagraphId={setFocusedParagraphId}
+              caretPositions={caretPositions}
+            />
           </div>
         </InnerContainer>
       </SectionContainer>
@@ -704,7 +280,7 @@ const InnerContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4.8rem;
+  gap: 3.6rem;
 
   h2,
   p {
@@ -757,185 +333,48 @@ const InnerContainer = styled.div`
   > div:last-child {
     display: flex;
     flex-direction: column;
-    gap: 2.4rem;
+    gap: 3.6rem;
 
     figure {
       width: 100%;
       height: auto;
+      max-width: 70rem;
+      margin: auto;
 
-      &:focus {
-        outline: solid var(--tertiary-rgb);
-      }
-
-      > div {
-        max-width: 70rem;
-        max-height: 70rem;
-        margin: auto;
+      img {
+        width: 100%;
+        height: 100%;
 
         &:focus {
-          outline: 1px solid rgb(--primary-rgb);
-        }
-
-        img {
-          width: 100%;
-          height: 100%;
+          outline-style: solid;
+          outline-width: 1px;
+          outline-color: var(--tertiary-rgb);
         }
       }
-    }
-    figcaption {
-      width: 100%;
-      text-align: center;
-      margin-top: 2.8rem;
-      font-size: 1.4rem;
-      font-weight: 300;
-    }
+      figcaption {
+        width: 100%;
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 300;
+        outline: none;
 
-    > section {
-      outline: none;
-
-      hr {
-        border: none;
-        display: flex;
-        margin-bottom: 3.6rem;
-
-        &::before {
-          content: "...";
+        > input {
           width: 100%;
-          font-size: 4.2rem;
-          letter-spacing: 1.4rem;
+          border: none;
+          padding: 1rem 0;
           outline: none;
+          font-size: 1.4rem;
+          font-weight: 400;
           text-align: center;
-          color: var(--tertiary-rgb);
+          opacity: 0.5;
+
+          &::placeholder {
+            color: var(--small-light-rgb);
+            text-align: center;
+            opacity: 1;
+          }
         }
       }
     }
-
-    input {
-      border: none;
-      padding: 1rem 0;
-      outline: none;
-      font-size: 2rem;
-      font-weight: 400;
-
-      &::placeholder {
-        color: var(--small-light-rgb);
-        opacity: 0.5;
-      }
-    }
-  }
-`;
-
-const AddContentContainer = styled.div`
-  display: flex;
-  position: absolute;
-  left: -5.4rem;
-  top: 2.1rem;
-  gap: 2rem;
-`;
-
-const AddContentButton = styled.div<{ $open: boolean }>`
-  svg {
-    font-size: 4.2rem;
-    color: var(--tertiary-rgb);
-    transform: ${({ $open }) => ($open ? "rotate(135deg)" : "rotate(90deg)")};
-    transition: transform 0.3s ease-in;
-    cursor: pointer;
-  }
-`;
-
-const AddContent = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  background-color: transparent;
-
-  & div {
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 50%;
-    border: 1px solid var(--tertiary-rgb);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 99;
-
-    > svg {
-      font-size: 1.8rem;
-      color: var(--tertiary-rgb);
-    }
-  }
-`;
-
-const CodeContainer = styled.pre`
-  border-color: #6b6b6b;
-  transition: border-color 250ms ease-out;
-  border-radius: 4px;
-  padding: 0;
-  box-shadow: 0px 8px 8px var(--tertiary-rgb);
-
-  &:focus,
-  &:active {
-    border: 1px solid var(--tertiary-rgb);
-  }
-  background: var(--primary-rgb);
-  white-space: pre;
-  font-size: 14px;
-  position: relative;
-  outline: none;
-
-  > span {
-    display: block;
-    overflow: auto;
-    padding: 3.2rem;
-  }
-`;
-
-const ContentEmbed = styled.div`
-  width: 100%;
-  border: 1px solid var(--primary-rgb);
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 1rem;
-  outline: none;
-`;
-
-const TextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  gap: 1.8rem;
-  justify-content: center;
-
-  h3 {
-    font-size: 1.6rem;
-    font-weight: 500;
-  }
-
-  p {
-    padding: 0;
-    font-size: 1.4rem;
-  }
-
-  p:last-child {
-    opacity: 0.6;
-  }
-`;
-
-const ImageContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  width: 18rem;
-  max-height: 18rem;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.09);
-
-  img {
-    width: 100%;
-    height: 100%;
   }
 `;

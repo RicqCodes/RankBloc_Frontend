@@ -5,3 +5,9 @@ export const extractBaseDomain = (url: string) => {
   }
   return null;
 };
+
+export const extractYouTubeVideoId = (url: string): string | null => {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+  console.log(url);
+  return match ? match[1] : null;
+};

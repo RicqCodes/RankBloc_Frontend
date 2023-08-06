@@ -15,7 +15,10 @@ export const getCaret = (el: HTMLElement): number => {
   return caretAt;
 };
 
-export const setCaret = (el: HTMLElement | null, offset: number) => {
+export const setCaret = (
+  el: HTMLElement | HTMLFormElement | Element | null,
+  offset: number
+) => {
   const range = document.createRange();
   const sel = window.getSelection();
 
