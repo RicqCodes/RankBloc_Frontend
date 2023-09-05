@@ -23,12 +23,18 @@ export const setCaret = (
   const sel = window.getSelection();
 
   if (sel && el) {
-    const firstChild = el.childNodes[0];
-    const textNode =
-      firstChild instanceof Text ? firstChild : firstChild?.firstChild;
+    const firstChild = el.firstChild;
 
-    if (textNode) {
-      range.setStart(textNode, offset);
+    if (firstChild) {
+      const textNode = firstChild instanceof Text ? firstChild : el;
+
+      // Ensure the offset is within the valid range of the text node's length
+      const adjustedOffset = Math.min(
+        offset,
+        textNode.textContent?.length || 0
+      );
+
+      range.setStart(textNode, adjustedOffset);
       range.collapse(true);
       sel.removeAllRanges();
       sel.addRange(range);

@@ -11,3 +11,7 @@ export const extractYouTubeVideoId = (url: string): string | null => {
   console.log(url);
   return match ? match[1] : null;
 };
+
+export const shortenAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};

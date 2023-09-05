@@ -18,6 +18,9 @@ interface IparagraphProps {
     caretPositions: number,
     type: paragraphType
   ) => void;
+  handleTextSelect: () => void;
+  applyFormatting: (value: string) => void;
+  selectedText: string;
 }
 const TextEditor: React.FC<IparagraphProps> = ({
   paragraph,
@@ -26,6 +29,9 @@ const TextEditor: React.FC<IparagraphProps> = ({
   setOpenMedia,
   setFocusedParagraphId,
   handleParagraphInput,
+  handleTextSelect,
+  applyFormatting,
+  selectedText,
 }) => {
   return (
     <React.Fragment>
@@ -39,6 +45,7 @@ const TextEditor: React.FC<IparagraphProps> = ({
           setOpenMedia(false);
           setFocusedParagraphId(paragraph.id);
         }}
+        onMouseUp={handleTextSelect}
         onInput={(e) => {
           const paragraphElement = e.target as HTMLParagraphElement;
           const newContent = paragraphElement.textContent || "";
@@ -53,6 +60,7 @@ const TextEditor: React.FC<IparagraphProps> = ({
             "text"
           );
         }}
+        // dangerouslySetInnerHTML={{ __html: paragraph.content }}
       >
         {paragraph.content}
       </p>

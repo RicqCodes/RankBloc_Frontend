@@ -35,7 +35,7 @@ export const Global = createGlobalStyle`
 
 html {
     font-size: 62.5%;
-    
+    font-family:var(--font-noto-sans);
     scroll-behavior: smooth;
     line-height: 1.5;
     font-weight: 400;

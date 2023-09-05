@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import { BiSearch } from "react-icons/bi";
@@ -7,6 +8,8 @@ import { FaPaintRoller } from "react-icons/fa";
 
 import Logo from "../../components/Logo";
 import { device } from "@/styles/utils.styled";
+import UserIcon from "@/components/ui/UserIcon";
+import Link from "next/link";
 
 const Header = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -38,13 +41,17 @@ const Header = () => {
         <RightContainer>
           <IconContainer>
             <BiSearch />
-            <PiNotePencilFill />
-            <IoMdNotifications />
+            <Link href="/write">
+              <PiNotePencilFill />
+            </Link>
+            <Link href="/user/notifications">
+              <IoMdNotifications />
+            </Link>
             <Background>
               <FaPaintRoller />
             </Background>
           </IconContainer>
-          <UserProfileIcon>PN</UserProfileIcon>
+          <UserIcon />
         </RightContainer>
       </InnerContainer>
     </HeaderContainer>
@@ -88,7 +95,8 @@ const IconContainer = styled.div`
   gap: 3.4rem;
   align-items: center;
 
-  & svg {
+  & svg,
+  a {
     height: 2.4rem;
     width: 2.4rem;
     color: var(--tertiary-rgb);

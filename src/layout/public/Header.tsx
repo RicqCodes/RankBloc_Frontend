@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { BiSolidWallet } from "react-icons/bi";
 import Logo from "../../components/Logo";
 import { Button } from "@/styles/element.styled";
+import Modal from "@/components/ui/Modal";
+import Connector from "@/components/Connector";
 
 const Header: React.FC = () => {
+  const [isOpen, setIsOPen] = useState(false);
+
   return (
-    <HeaderContainer>
-      <HeaderInnerContainer>
-        <Logo />
-        <Nav>
-          <ul>
-            <li>Our Story</li>
-            <li>Membership</li>
-            <li>Write</li>
-          </ul>
-          <Button $primary $fontsize="1.5">
-            Get Started
-          </Button>
-        </Nav>
-      </HeaderInnerContainer>
-    </HeaderContainer>
+    <>
+      {isOpen && <Connector setIsOpen={setIsOPen} />}
+      <HeaderContainer>
+        <HeaderInnerContainer>
+          <Logo />
+          <Nav>
+            <ul>
+              <li>Our Story</li>
+              <li>Membership</li>
+              <li>Write</li>
+            </ul>
+            <Button $primary $fontsize="1.6" onClick={() => setIsOPen(true)}>
+              <BiSolidWallet />
+              Connect Wallet
+            </Button>
+          </Nav>
+        </HeaderInnerContainer>
+      </HeaderContainer>
+    </>
   );
 };
 
@@ -59,6 +68,15 @@ const Nav = styled.nav`
       font-weight: 500;
       line-height: 100%;
       color: var(--foreground-rgb);
+    }
+  }
+
+  button {
+    font-weight: 500;
+
+    > svg {
+      font-size: 2.4rem;
+      margin-right: 1rem;
     }
   }
 `;

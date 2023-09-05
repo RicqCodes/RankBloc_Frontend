@@ -1,16 +1,17 @@
+import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
 
 const Logo = () => {
   return (
-    <>
+    <Link href="/">
       <LogoText>
         <p>Rank</p>
         <span>
           Bloc<small>.</small>
         </span>
       </LogoText>
-    </>
+    </Link>
   );
 };
 

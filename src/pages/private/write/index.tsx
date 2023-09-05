@@ -23,6 +23,8 @@ const WritePage = () => {
     Record<string, HTMLParagraphElement | HTMLPreElement | HTMLElement | null>
   >({});
 
+  const [selectedText, setSelectedText] = useState("");
+  const [formatting, setFormatting] = useState("");
   const [openMedia, setOpenMedia] = useState<boolean>(false);
   const [isTitleEmpty, setIsTitleEmpty] = useState<boolean>(true);
   const [paragraphs, setParagraphs] = useState<IParagraph[]>([
@@ -90,6 +92,37 @@ const WritePage = () => {
     } else {
       // Handle the case where base64 is not a string (e.g., due to a failed conversion)
       console.error("Failed to convert image to base64.");
+    }
+  };
+
+  const handleTextSelect = () => {
+    const selectedText = window.getSelection()?.toString();
+    setSelectedText(selectedText);
+  };
+  const applyFormatting = (format: string) => {
+    if (selectedText) {
+      // Get the selected range and wrap it with the specified format
+      const range = document.getSelection().getRangeAt(0);
+      const newNode = document.createElement(format);
+      range.surroundContents(newNode);
+
+      // Get the formatted content with semantic tags
+      const formattedSelectedText = `<${format}>${selectedText}</${format}>`;
+
+      // Update the paragraph content with the appropriate semantic tags
+      const updatedParagraphs = paragraphs.map((paragraph) => {
+        if (paragraph.content.includes(selectedText)) {
+          const formattedContent = paragraph.content.replace(
+            selectedText,
+            formattedSelectedText
+          );
+          return { ...paragraph, content: formattedContent };
+        }
+        return paragraph;
+      });
+
+      setParagraphs(updatedParagraphs);
+      setSelectedText("");
     }
   };
 
@@ -165,6 +198,17 @@ const WritePage = () => {
           });
         }
       }
+      // else if (event.metaKey || event.ctrlKey) {
+      //   // Handle formatting shortcuts
+      //   event.preventDefault();
+      //   if (key === "b") {
+      //     applyFormatting("strong");
+      //   } else if (key === "i") {
+      //     applyFormatting("em");
+      //   } else if (key === "u") {
+      //     applyFormatting("u");
+      //   }
+      // }
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -172,7 +216,7 @@ const WritePage = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [selectedText]);
 
   useEffect(() => {
     if (focusedParagraphId) {
@@ -219,8 +263,6 @@ const WritePage = () => {
     }
   }, [focusedParagraphId, paragraphs]);
 
-  console.log(paragraphs);
-
   return (
     <WriteContainer>
       <SectionContainer>
@@ -253,6 +295,9 @@ const WritePage = () => {
               focusedParagraphId={focusedParagraphId}
               setFocusedParagraphId={setFocusedParagraphId}
               caretPositions={caretPositions}
+              handleTextSelect={handleTextSelect}
+              applyFormatting={applyFormatting}
+              selectedText={selectedText}
             />
           </div>
         </InnerContainer>

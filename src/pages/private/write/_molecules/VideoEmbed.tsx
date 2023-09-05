@@ -51,9 +51,9 @@ const VideoEmbed: React.FC<IVideoProps> = ({
   return (
     <React.Fragment>
       {!paragraph?.videoId && (
-        <input
-          type="text"
+        <Input
           data-id={paragraph.id}
+          type="text"
           placeholder="Paste a YouTube video link and press Enter"
           onChange={(e) => {
             const newContent = e.target.value;
@@ -126,6 +126,20 @@ const VideoEmbed: React.FC<IVideoProps> = ({
 };
 
 export default VideoEmbed;
+
+const Input = styled.input`
+  width: 100%;
+  border: none;
+  padding: 1rem 0;
+  outline: none;
+  font-size: 2rem;
+  font-weight: 400;
+
+  &::placeholder {
+    color: var(--small-light-rgb);
+    opacity: 0.5;
+  }
+`;
 
 const Video = styled.figure`
   width: 100%;

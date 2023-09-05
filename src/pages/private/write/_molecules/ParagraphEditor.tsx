@@ -18,6 +18,9 @@ interface IParagraphEditorProps {
   focusedParagraphId: string;
   setFocusedParagraphId: (value: string) => void;
   caretPositions: React.MutableRefObject<Record<string, number>>;
+  handleTextSelect: () => void;
+  applyFormatting: (value: string) => void;
+  selectedText: string;
 }
 export const ParagraphEditor: React.FC<IParagraphEditorProps> = ({
   paragraphs,
@@ -27,7 +30,9 @@ export const ParagraphEditor: React.FC<IParagraphEditorProps> = ({
   focusedParagraphId,
   setFocusedParagraphId,
   caretPositions,
-  // ... (Other props)
+  handleTextSelect,
+  applyFormatting,
+  selectedText,
 }) => {
   const handleParagraphInput = (
     e: FormEvent<HTMLParagraphElement | HTMLPreElement | HTMLElement>,
@@ -46,11 +51,14 @@ export const ParagraphEditor: React.FC<IParagraphEditorProps> = ({
       );
       return;
     }
-    setParagraphs((prevParagraph) =>
-      prevParagraph.map((paragraph) =>
-        paragraph.id === id ? { ...paragraph, content, type } : paragraph
-      )
-    );
+
+    setParagraphs((prevParagraph) => {
+      return prevParagraph.map((paragraph) => {
+        return paragraph.id === id
+          ? { ...paragraph, content, type }
+          : paragraph;
+      });
+    });
 
     // Set the caret position within the updated paragraph
     const focusedParagraphElement = document.querySelector(
@@ -61,6 +69,7 @@ export const ParagraphEditor: React.FC<IParagraphEditorProps> = ({
       setCaret(focusedParagraphElement, caretOffset);
     }
   };
+
   return (
     <React.Fragment>
       {paragraphs.map((paragraph) => {
@@ -74,6 +83,9 @@ export const ParagraphEditor: React.FC<IParagraphEditorProps> = ({
               setFocusedParagraphId={setFocusedParagraphId}
               caretPositions={caretPositions}
               handleParagraphInput={handleParagraphInput}
+              handleTextSelect={handleTextSelect}
+              applyFormatting={applyFormatting}
+              selectedText={selectedText}
             />
           );
         } else if (paragraph.type === "image") {
