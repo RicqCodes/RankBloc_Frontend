@@ -20,6 +20,8 @@
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
     "is-hotkey": "^0.2.0",
+    "jose": "^4.14.6",
+    "jsonwebtoken": "^9.0.2",
     "next": "13.4.10",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -39,6 +41,7 @@
     "@types/dompurify": "^3.0.2",
     "@types/draft-js": "^0.11.12",
     "@types/js-cookie": "^3.0.3",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/uuid": "^9.0.2"
   }
 }

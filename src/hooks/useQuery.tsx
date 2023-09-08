@@ -1,3 +1,4 @@
+"use client";
 import { baseQuery } from "@/utils/baseHandlers/baseQuery";
 import useSWR from "swr";
 

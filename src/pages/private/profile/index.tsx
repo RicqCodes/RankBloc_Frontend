@@ -3,59 +3,108 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { styled } from "styled-components";
+import useSWR from "swr";
+import {
+  FaTwitter,
+  FaInstagram,
+  FaLinkedin,
+  FaTiktok,
+  FaFacebook,
+} from "react-icons/fa";
+import { RiEdit2Line } from "react-icons/ri";
+
 import SideBySideContainer from "../_molecules/SideBySideContainer";
 import Tab from "../_molecules/Tab";
 
-import { FaTwitterSquare, FaInstagramSquare, FaLinkedin } from "react-icons/fa";
 import TopPostContainer from "../_molecules/TopPostContainer";
+import { useUser } from "@/hooks/useUser";
+import { baseQuery } from "@/utils/baseHandlers/baseQuery";
+import Image from "next/image";
+import Modal from "@/components/ui/Modal";
+import EditProfile from "./_molecules/EditProfile";
+import { Button } from "@/styles/element.styled";
 
-const UserProfilePage = () => {
+interface PlatformIcons {
+  [platformName: string]: React.ComponentType;
+}
+
+const platformIcons: PlatformIcons = {
+  facebook: FaFacebook,
+  twitter: FaTwitter,
+  instagram: FaInstagram,
+  linkedin: FaLinkedin,
+  tiktok: FaTiktok,
+};
+
+const UserProfilePage = ({ initialData }: { initialData: any }) => {
   const [active, setActive] = useState(1);
+  const [openModal, setOpenModal] = useState(false);
+  const { user } = useUser();
+  const { data } = useSWR(
+    `http://localhost:8000/api/v1/user-relationships/${user?.user._id}`,
+    baseQuery,
+    { fallbackData: initialData }
+  );
 
   return (
     <SideBySideContainer>
       <LeftContainer slot="left">
         <UserInfoContainer>
-          <ImageContainer></ImageContainer>
+          {openModal && (
+            <Modal setIsOpen={setOpenModal}>
+              <EditProfile setIsOpen={setOpenModal} />
+            </Modal>
+          )}
+          <Edit onClick={() => setOpenModal(true)}>
+            <RiEdit2Line />
+          </Edit>
+          <ImageContainer>
+            <Image
+              src={user?.user.photoUrl}
+              alt={` A display photo of user ${user?.user._id}`}
+              height="20"
+              width="20"
+            />
+          </ImageContainer>
           <div>
             <NameContainer>
-              <h2>Prince Nwakanma</h2>
-              <small>0x455E8c8970bfCc2F3599bA44365221f48636c0c0</small>
+              <h2>{user?.user.name ?? "John Doe"}</h2>
+              <small>{user?.user.publicAddress}</small>
               <div>
                 <p>
-                  <span>1.5M </span>
+                  <span>{data?.followers?.results || 0}</span>
                   Followers
                 </p>
                 <p>
-                  <span>150 </span>
+                  <span>{data?.following?.results || 0}</span>
                   Following
                 </p>
                 <p>
-                  <span>1M </span>
-                  Subscribers
+                  <span>{user?.user.reputation}</span>
+                  Reputation
                 </p>
               </div>
             </NameContainer>
             <button>Follow</button>
-            <Socials>
-              <Link href="#">
-                <FaLinkedin />
-              </Link>
-              <Link href="#">
-                <FaTwitterSquare />
-              </Link>
-              <Link href="#">
-                <FaInstagramSquare />
-              </Link>
-            </Socials>
+            {user?.user.socialMediaLinks?.length > 0 && (
+              <Socials>
+                {user?.user.socialMediaLinks.map(
+                  (link: { platform: string; link: string }) => {
+                    const platformName = link.platform.toLowerCase();
+                    if (platformIcons[platformName]) {
+                      const IconComponent = platformIcons[platformName];
+                      return (
+                        <Link key={link.platform} href={link.link}>
+                          <IconComponent />
+                        </Link>
+                      );
+                    }
+                  }
+                )}
+              </Socials>
+            )}
 
-            <p>
-              Welcome to my creative corner! 🎨✨ Aspiring writer, explorer, and
-              storyteller weaving words into captivating tales. 📚🌏 Join me on
-              this journey of imagination and discovery as I share my thoughts,
-              adventures, and musings. 🌟💭 Embracing the beauty of life, one
-              story at a time. 🌸🌈
-            </p>
+            <p>{user?.user.bio ?? ""}</p>
           </div>
         </UserInfoContainer>
         <Tab
@@ -140,13 +189,14 @@ const UserInfoContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 
   h2 {
     font-size: 2.2rem;
     font-weight: 600;
   }
 
-  p,
+  > p,
   span {
     font-size: 1.6rem;
   }
@@ -158,7 +208,7 @@ const UserInfoContainer = styled.div`
     justify-content: center;
     gap: 1.8rem;
 
-    button {
+    > button {
       background: transparent;
       border: none;
       cursor: pointer;
@@ -167,6 +217,10 @@ const UserInfoContainer = styled.div`
       background: var(--tertiary-rgb);
       color: var(--logo-text);
       border-radius: var(--border-radius);
+    }
+
+    > p {
+      font-size: 1.4rem;
     }
   }
 `;
@@ -183,12 +237,14 @@ const NameContainer = styled.div`
 
     p {
       letter-spacing: 0.8px;
+      font-size: 1.5rem;
     }
   }
 
   span {
     color: var(--tertiary-rgb);
     font-weight: 600;
+    margin-right: 0.4rem;
   }
 
   p {
@@ -204,7 +260,12 @@ const ImageContainer = styled.div`
   width: 12rem;
   height: 12rem;
   border-radius: 50%;
-  background: #d9d9d9;
+  background: var(--secondary-rgb);
+
+  > img {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const Socials = styled.div`
@@ -238,4 +299,16 @@ const SeeMore = styled.div`
   text-align: right;
   color: var(--tertiary-rgb);
   cursor: pointer;
+`;
+
+const Edit = styled.div`
+  position: absolute;
+  top: 0;
+  right: 16rem;
+  cursor: pointer;
+
+  svg {
+    font-size: 2.2rem;
+    color: var(--tertiary-rgb);
+  }
 `;

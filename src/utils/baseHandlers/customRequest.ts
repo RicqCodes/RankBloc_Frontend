@@ -28,11 +28,9 @@ const customRequest = async (
     };
   }
 
-  console.log(fetchUrl);
   // Perform the fetch with merged headers
   const response = await fetch(fetchUrl, options);
-  console.log("finished fetching");
-  console.log(response.ok);
+
   // Handle the response as needed
   if (!response.ok) {
     // const error = new Error(`Request failed with status: ${response.status}`);
@@ -40,7 +38,6 @@ const customRequest = async (
   }
 
   const data = await response.json();
-  console.log("data", data);
   return data;
 };
 

@@ -1,7 +1,3 @@
-import customRequest from "@/utils/baseHandlers/customRequest";
-import getUser from "./getUser";
-import axios from "axios";
-import { useQuery } from "wagmi";
 import { baseQuery } from "@/utils/baseHandlers/baseQuery";
 import { env } from "@/utils/env";
 const getNonce = async (address: string) => {

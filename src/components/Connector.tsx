@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
-
+import { setCookie } from "cookies-next";
 import { useAccount, useConnect, useSignMessage } from "wagmi";
 import { disconnect } from "@wagmi/core";
 
@@ -17,7 +18,7 @@ import playStore from "../../public/Google_Play.svg";
 import appStore from "../../public/App_Store.svg";
 import QRForMobile from "./ui/QRForMobile";
 import createUser from "@/requests/user/createUser";
-import { setSignedMessage, getSignedMessage } from "@/utils/setSignedMessage";
+import { setCookieClient, getCookieClient } from "@/utils/setCookies";
 import getNonce from "@/requests/user/getNonce";
 import AuthenticateUser from "@/requests/user/authenticate";
 
@@ -37,13 +38,13 @@ const Connector = ({ setIsOpen }: { setIsOpen: (value: boolean) => void }) => {
       },
     });
 
-  const {
-    connector: activeConnector,
-    isConnected,
-    address,
-  } = useAccount({
-    onConnect({ address, connector, isReconnected }) {},
-  });
+  // const {
+  //   connector: activeConnector,
+  //   isConnected,
+  //   address,
+  // } = useAccount({
+  //   onConnect({ address, connector, isReconnected }) {},
+  // });
 
   const { data, isError, isSuccess, signMessageAsync } = useSignMessage();
 
@@ -61,9 +62,18 @@ const Connector = ({ setIsOpen }: { setIsOpen: (value: boolean) => void }) => {
   };
 
   const handleAuthenticate = async (nonce: string, address: string) => {
-    const message = `I affix my digital seal to verify address for RankBloc.
-    NONCE: ${nonce}
-    `;
+    // const message = `I affix my digital seal to verify address for RankBloc.
+
+    // NONCE: ${nonce}
+    // `;
+    console.log(address);
+    const message = `Welcome to RankBloc!
+    Click to sign in and accept the RankBloc Terms of Service (https://rankbloc.io/tos) and Privacy Policy (https://rankbloc.io/privacy).
+    This request will not trigger a blockchain transaction or cost any gas fees.
+    Your authentication status will reset after 24 hours.
+    
+    Nonce:
+    ${nonce}`;
 
     console.log("authentication is currently going on");
 
@@ -72,12 +82,16 @@ const Connector = ({ setIsOpen }: { setIsOpen: (value: boolean) => void }) => {
         message: message,
       });
 
-      setSignedMessage(signature, nonce);
-      const token = await AuthenticateUser(address, signature);
+      console.log(signature);
+      console.group(address);
+      setCookieClient("userSignature", signature);
+      setCookieClient("nonce", nonce);
+      const response = await AuthenticateUser(address, signature);
 
-      window.location.reload();
-
-      console.log(token);
+      if (response.token) {
+        setCookieClient("token", response.token);
+      }
+      console.log(response.token);
     } catch (err) {
       await disconnect();
       console.log(err);
@@ -95,11 +109,7 @@ const Connector = ({ setIsOpen }: { setIsOpen: (value: boolean) => void }) => {
       console.log(nonce);
       if (nonce) {
         // User account created successfully; proceed with authentication
-        const data = await handleAuthenticate(nonce, address);
-      }
-
-      if (response.status === "success") {
-        console.log(getSignedMessage("message"));
+        await handleAuthenticate(nonce, address);
       }
     } catch (err) {
       if ((err as any).response.status === "failed") {
@@ -111,16 +121,27 @@ const Connector = ({ setIsOpen }: { setIsOpen: (value: boolean) => void }) => {
   const handleSignupOrLogin = async (address: string) => {
     try {
       console.log("connected address", address);
-      const nonce = await getNonce(address);
-      console.log(nonce, "This is the current nonce");
-      if (Object.entries(nonce).length > 0) {
+      const res = await getNonce(address);
+      console.log(res, "This is the current nonce");
+      if (res.nonce) {
         console.log("nonce present");
-        handleAuthenticate(nonce, address);
+        handleAuthenticate(res.nonce, address);
       } else {
         createNewAccount(address);
       }
     } catch (err) {}
   };
+
+  useEffect(() => {
+    const token = getCookieClient("token");
+    const nonce = getCookieClient("nonce");
+    const userSignature = getCookieClient("userSignature");
+    console.log(token, nonce, userSignature);
+    if (!token ?? !nonce ?? !userSignature) {
+      console.log("session expired");
+      disconnect();
+    }
+  }, []);
 
   return (
     <Modal

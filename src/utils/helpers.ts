@@ -1,3 +1,8 @@
+"use client";
+import Cookies from "js-cookie";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { NextRequest, NextResponse } from "next/server";
+
 export const extractBaseDomain = (url: string) => {
   const matches = url.match(/^(?:https?:\/\/)?(?:www\.)?([^/]+)(?:\/.*)?$/i);
   if (matches) {
@@ -13,5 +18,28 @@ export const extractYouTubeVideoId = (url: string): string | null => {
 };
 
 export const shortenAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return `${address?.slice(0, 6)}...${address?.slice(-4)}`;
+};
+
+export const constructCookieHeader = ({ cookies }: { cookies: any }) => {
+  let cookieString = "";
+  const allCookies = cookies.getAll();
+
+  allCookies.forEach((cookie: any) => {
+    cookieString += `${cookie.name}=${cookie.value};`;
+  });
+
+  return cookieString;
+};
+
+export const deleteBrowserCookie = (
+  request: NextRequest,
+  response: NextResponse,
+  cookie: string
+) => {
+  const { value } = request.cookies.get(cookie)!;
+  if (value) {
+    response.cookies?.set(cookie, value);
+    response.cookies?.delete(cookie);
+  }
 };

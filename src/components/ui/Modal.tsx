@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { MdClose } from "react-icons/md";
 import { MdArrowBackIos } from "react-icons/md";
 
-// import { fadein, popup } from "@/styles/animation.styled";
-
 interface IModal {
   setIsOpen: (value: boolean) => void;
   setGoBack?: (value: boolean) => void;
@@ -67,19 +65,17 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
 `;
-/* animation: ${fadein} 0.3s linear; */
 
 const ModalContainer = styled.div`
   width: 90%;
   max-width: 650px;
   min-height: 200px;
-  max-height: 600px;
+  max-height: 740px;
   overflow: auto;
   border-radius: 8px;
   background: var(--secondary-rgb);
   padding: 24px;
 `;
-/* animation: ${popup} 0.2s linear; */
 
 const ModalHeader = styled.div`
   display: flex;
@@ -88,7 +84,6 @@ const ModalHeader = styled.div`
   width: 100%;
 
   > div {
-    /* margin-left: auto; */
     cursor: pointer;
   }
 `;

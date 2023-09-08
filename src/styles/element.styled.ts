@@ -10,18 +10,16 @@ interface IButton {
   $rounded?: boolean;
   $fontsize: string;
   $height?: string;
+  $outline?: string;
 }
 
 export const Button = styled.button<IButton>`
-  /* This renders the buttons above... Edit me! */
-  background: var(--tertiary-rgb);
   color: var(--secondary-rgb);
   font-size: ${(props) => `${props.$fontsize}rem`};
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.2rem 1.4rem;
-  height: ${({ $height }) => ($height ? `${$height}rem` : "4.8rem")};
+  padding: 1rem 2.8rem;
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
@@ -35,9 +33,6 @@ export const Button = styled.button<IButton>`
     filter: brightness(1);
   }
 
-  /* The GitHub button is a primary button
-   * edit this to target it specifically! */
-
   ${(props) =>
     props.$fullWidth &&
     css`
@@ -45,11 +40,32 @@ export const Button = styled.button<IButton>`
     `}
 
   ${(props) =>
+    props.$outline === "cover"
+      ? css`
+          background: var(--tertiary-rgb);
+        `
+      : props.$outline === "border"
+      ? css`
+          border: 1px solid var(--tertiary-rgb);
+          background: transparent;
+          color: var(--tertiary-rgb);
+        `
+      : ""}
+
+  ${(props) =>
     props.$rounded &&
     css`
       width: 100%;
       border-radius: 10rem;
     `}
+
+    &:disabled {
+    background-color: var(--tertiary-opaque-rgb);
+    pointer-events: none;
+    :hover {
+      background: none;
+    }
+  }
 `;
 
 // export const Loader = styled.div`

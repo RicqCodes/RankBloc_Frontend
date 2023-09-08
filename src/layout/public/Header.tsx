@@ -21,7 +21,12 @@ const Header: React.FC = () => {
               <li>Membership</li>
               <li>Write</li>
             </ul>
-            <Button $primary $fontsize="1.6" onClick={() => setIsOPen(true)}>
+            <Button
+              $primary
+              $fontsize="1.6"
+              $outline="cover"
+              onClick={() => setIsOPen(true)}
+            >
               <BiSolidWallet />
               Connect Wallet
             </Button>

@@ -17,7 +17,8 @@ export const Global = createGlobalStyle`
   --primary-rgb:rgb(242, 248, 247);
   --secondary-rgb: rgb(232, 243, 243);
   --tertiary-rgb: rgb(0, 170, 161);
-
+  --tertiary-opaque-rgb: rgba(0, 170, 161, 0.6);
+  --warning-rgb: #d0342c;
 
   --small-rgb: #222222;
   --small-light-rgb:#6B6B6B;
@@ -95,11 +96,5 @@ span {
 small {
         font-size: 1.2rem;
 }
-
-/* @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-} */
 
 `;

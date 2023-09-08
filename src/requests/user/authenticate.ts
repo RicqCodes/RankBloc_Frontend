@@ -2,7 +2,7 @@ import customRequest from "@/utils/baseHandlers/customRequest";
 
 const AuthenticateUser = async (address: string, signature: string) => {
   try {
-    const response = await customRequest("users", "POST", {
+    const response = await customRequest("authentication", "POST", {
       address,
       signature,
     });

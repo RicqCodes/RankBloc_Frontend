@@ -1,33 +1,33 @@
-// "use client";
-
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
-
-// import getUser from "@/requests/user/getUser";
+import { BsFillWalletFill } from "react-icons/bs";
 import { styled } from "styled-components";
-import { env } from "@/utils/env";
-import { useUser } from "@/hooks/useUser";
 import { useAccount } from "wagmi";
-import { shortenAddress } from "@/utils/helpers";
 
-const UserIcon = () => {
-  const { user } = useUser();
+const UserIcon = ({ user }: { user: any }) => {
   const { address } = useAccount();
 
-  console.log(user);
+  console.log(address);
 
   return (
     <ProfileContainer>
+      <Balance>
+        <BsFillWalletFill />
+        <p suppressHydrationWarning>
+          {/* {shortenAddress(user?.user?.publicAddress)} */}
+          0.004 ETH
+        </p>
+      </Balance>
+      <Divider />
       <ImageContainer>
         <Image
-          src={user?.data?.user?.photoUrl}
+          src={user?.user?.photoUrl}
           alt="user profile img"
-          width="38"
-          height="38"
+          width="28"
+          height="28"
         />
       </ImageContainer>
-      <p>{shortenAddress(address as string)}</p>
     </ProfileContainer>
   );
 };
@@ -40,7 +40,7 @@ const ProfileContainer = styled.div`
   justify-content: center;
   border: 2px solid var(--tertiary-rgb);
   padding: 0.3rem 1.6rem;
-  gap: 0.8rem;
+  gap: 1.2rem;
   border-radius: 12rem;
   cursor: pointer;
 `;
@@ -50,4 +50,27 @@ const ImageContainer = styled.div`
   border-radius: 50%;
   align-items: center;
   justify-content: center;
+  height: 3.2rem;
+  width: 3.2rem;
+  border: 0.4px solid var(--tertiary-rgb);
+`;
+
+const Balance = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  svg {
+    color: var(--tertiary-rgb);
+    font-size: 2rem;
+  }
+  p {
+    font-size: 1.4rem;
+  }
+`;
+
+const Divider = styled.div`
+  height: 2.8rem;
+  width: 2px;
+  background-color: var(--tertiary-rgb);
 `;

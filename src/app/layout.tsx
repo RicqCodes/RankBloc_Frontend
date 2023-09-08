@@ -20,6 +20,18 @@ export const metadata: Metadata = {
   description: "The next gen blogging application",
 };
 
+const initializeUser = async () => {
+  try {
+    const response = await getUser();
+
+    if (response.status === "failed") {
+      redirect("/");
+    }
+
+    return response.data;
+  } catch (err) {}
+};
+
 export default async function RootLayout({
   user,
   site,
@@ -27,9 +39,7 @@ export default async function RootLayout({
   user: React.ReactNode;
   site: React.ReactNode;
 }) {
-  const currentUser = await getUser();
-
-  if (currentUser.status === "fail") NextResponse.redirect("/");
+  const currentUser = await initializeUser();
 
   return (
     <html lang="en">
@@ -43,8 +53,8 @@ export default async function RootLayout({
             <AuthProvider user={currentUser}>
               {
                 <>
-                  {currentUser?.data && user}
-                  {!currentUser?.data && site}
+                  {currentUser && user}
+                  {!currentUser && site}
                 </>
               }
             </AuthProvider>
